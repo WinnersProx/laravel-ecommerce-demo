@@ -20,4 +20,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::group(['middleware' => 'auth:api'], function () {
     Route::apiResource('/products', 'Api\ProductController');
+
+    Route::post(
+        '/order/init-product-order',
+        'Api\ProductOrderController@initProductOrder'
+    );
 });

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Product;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
@@ -36,15 +37,19 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'string|required',
-            'category' => 'integer|required',
-            'quantity' => 'integer|required'
+            'name' => 'string|required|unique:products',
+            'category' => 'string|required',
+            'quantity' => 'integer|required',
+            'price' => 'numeric|required'
         ]);
+
+        $product = Product::create($request->all());
 
 
         return response()->json([
             'success' => true,
-            'message' => 'Product successfuly created'
+            'message' => 'Product successfuly created',
+            'product' => $product
         ]);
     }
 

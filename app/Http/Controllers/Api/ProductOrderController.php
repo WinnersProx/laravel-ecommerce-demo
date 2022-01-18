@@ -9,6 +9,8 @@ use App\Http\Requests\Order\InitOrderRequest;
 use App\Http\Resources\ProductOrder as ResourcesProductOrder;
 use App\Mail\ProductOrderCompleted;
 use App\Models\ProductOrder;
+use App\Services\Order\ComputeOrderPrice;
+use App\Services\Order\ComputeStaffOrderPrice;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
@@ -23,7 +25,7 @@ class ProductOrderController extends Controller
     public function initProductOrder(InitOrderRequest $request): JsonResponse
     {
         $product = Product::find($request->product_id);
-        $totalPrice = ($product->price * $request->quantity);
+        $totalPrice = (new ComputeOrderPrice())->compute($product, $request->quantity);
 
         // TODO: Validate quantity
 
@@ -33,7 +35,7 @@ class ProductOrderController extends Controller
             'payment_reference' => Str::uuid()
         ]);
 
-        // Decrease the number of items
+        // Decrease the number of items (Make use of observers)
         $product->update(['quantity' => $product->quantity - $request->quantity]);
 
         return response()->json([

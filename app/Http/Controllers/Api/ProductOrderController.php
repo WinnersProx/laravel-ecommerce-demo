@@ -24,25 +24,10 @@ class ProductOrderController extends Controller
      */
     public function initProductOrder(InitOrderRequest $request): JsonResponse
     {
-        $product = Product::find($request->product_id);
-        $totalPrice = (new ComputeOrderPrice())->compute($product, $request->quantity);
-
-        // TODO: Validate quantity
-
-        $productOrder = $product->orders()->create([
-            'total_price' => $totalPrice,
-            'user_id' => $request->user()->id,
-            'payment_reference' => Str::uuid()
-        ]);
-
-        // Decrease the number of items (Make use of observers)
-        $product->update(['quantity' => $product->quantity - $request->quantity]);
-
-        return response()->json([
-            'success' => true,
-            'order' => new ResourcesProductOrder($productOrder),
-            'message' => "Your order has been successfuly placed ({$totalPrice} RWF)."
-        ]);
+        // TODO: Validate expected fields
+        // TODO: Validate remaining quantity
+        // TODO: Compute pricing
+        return response()->json(['success' => true]);
     }
 
     /**
@@ -51,21 +36,9 @@ class ProductOrderController extends Controller
      */
     public function completeProductOrder(Request $request)
     {
-        $request->validate([
-            'payment_reference' => 'required|string|exists:product_orders'
-        ]);
-
-        $productOrder = ProductOrder::wherePaymentReference($request->payment_reference)
-            ->first();
-
-        if ($request->user()->id !== $productOrder->user_id) {
-            return response()->json([
-                'success' => false,
-                'message' => 'You are not allowed to update this order'
-            ], 403);
-        }
-
-        $productOrder->update(['status' => 'completed']);
+        // TODO: Find order
+        // TODO: Check order ownership
+        // TODO: Set order as completed
 
         return response()->json([
             'success' => true,

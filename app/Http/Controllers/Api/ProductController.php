@@ -40,19 +40,21 @@ class ProductController extends Controller
     {
         $request->validate([
             'name' => 'string|required|unique:products',
-            'category' => 'string|required',
             'quantity' => 'integer|required',
             'price' => 'numeric|required'
         ]);
 
-        $product = Product::create($request->all());
+        $product = $request->user()->products()
+            ->create($request->all());
 
 
         return response()->json([
             'success' => true,
             'message' => 'Product successfuly created',
             'product' => $product
-        ]);
+            ],
+            201
+        );
     }
 
     /**

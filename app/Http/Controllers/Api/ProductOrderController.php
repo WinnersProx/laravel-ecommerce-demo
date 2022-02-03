@@ -55,13 +55,15 @@ class ProductOrderController extends Controller
      * Complete a product order
      * @param ProductOrder $productOrder
      */
-    public function completeProductOrder(ProductOrder $order)
+    public function completeProductOrder(ProductOrder $order, Request $request)
     {
-        // TODO: Find order
-        // TODO: Check order ownership
-        // TODO: Set order as completed
-        // Set product order quantity
+        if ($order->user->id !== $request->user()->id) {
+            return response()->json([
+                'success' => false, 'You are not authorized to complete this order'
+            ], 403);
+        }
 
+        $order->update(['status' => 'completed']);
 
         return response()->json([
             'success' => true,

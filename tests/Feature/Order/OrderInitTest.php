@@ -104,47 +104,4 @@ class OrderInitTest extends TestCase
 
         $this->assertEquals(($initialQuantity - 2), $newProduct->fresh()->quantity);
     }
-
-
-    /**
-     * ORDER COMPLETION
-     * Cannot complete an order if the user requesting ain't the the owner
-     */
-    public function test_user_cannot_complete_some_other_user_order()
-    {
-        /**
-         * @var User $newUser
-         */
-        $newUser = User::factory()->create();
-
-        $order = ProductOrder::factory()
-            ->for($this->user, 'user')->for($this->product)
-            ->create();
-
-        $response = $this->actingAs($newUser, 'api')
-            ->patch("/api/order/complete-order/{$order->id}");
-
-        $response->assertStatus(403);
-
-        $this->assertTrue($response['success']);
-    }
-
-
-    // Set the order as completed, could also check if the payment is performed after the payment is done
-    public function test_user_can_complete_an_their_initiated_order()
-    {
-        $order = ProductOrder::factory()
-            ->for($this->user)
-            ->for($this->product)
-            ->create();
-
-        $response = $this->actingAs($this->user, 'api')
-            ->patch("/api/order/complete-order/{$order->id}");
-
-        $response->assertStatus(200);
-
-        $this->assertTrue($response['success']);
-
-        $this->assertTrue($order->status === 'completed');
-    }
 }

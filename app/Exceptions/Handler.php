@@ -90,10 +90,10 @@ class Handler extends ExceptionHandler
         if ($exception instanceof AuthorizationException)
             return $this->exceptionResponse($exception->getMessage(), 403);
 
-        // if ($exception instanceof CustomException) {
-        //     $code = $exception->getCode();
-        //     return response()->json($exception->getFormatted(), $code);
-        // }
+        if ($exception instanceof GeneralException) {
+            $code = $exception->getCode();
+            return response()->json($exception->getFormatted(), $code);
+        }
 
         return parent::render($request, $exception);
     }

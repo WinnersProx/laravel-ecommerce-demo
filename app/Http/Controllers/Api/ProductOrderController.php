@@ -28,12 +28,10 @@ class ProductOrderController extends Controller
 
         $totalPrice = $product->price * $request->quantity;
 
-        if ($request->quantity > $product->quantity) {
-            return response()->json([
-                'success' => false,
-                'message' => "The quantity should be less than or equal to {$product->quantity}"
-            ], 400);
-        }
+        throwIf(
+            ($request->quantity > $product->quantity),
+            "The quantity should be less than or equal to {$product->quantity}"
+        );
 
         $order = $request->user()->orders()->create([
             'product_id' => $request->product_id,
@@ -57,11 +55,11 @@ class ProductOrderController extends Controller
      */
     public function completeProductOrder(ProductOrder $order, Request $request)
     {
-        if ($order->user->id !== $request->user()->id) {
-            return response()->json([
-                'success' => false, 'You are not authorized to complete this order'
-            ], 403);
-        }
+        throwIf(
+            ($order->user->id !== $request->user()->id),
+            'You are not authorized to complete this order',
+            403
+        );
 
         $order->update(['status' => 'completed']);
 

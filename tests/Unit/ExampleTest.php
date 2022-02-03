@@ -4,7 +4,7 @@ namespace Tests\Unit;
 
 use Tests\TestCase;
 
-class ProductTest extends TestCase
+class ExampleTest extends TestCase
 {
 
     public function test_project_is_up()

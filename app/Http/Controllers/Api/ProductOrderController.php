@@ -24,13 +24,31 @@ class ProductOrderController extends Controller
      */
     public function initProductOrder(InitOrderRequest $request): JsonResponse
     {
-        // TODO: Validate expected fields
+        $product = Product::whereId($request->product_id)->firstOrFail();
 
-        // TODO: Validate remaining quantity
+        $totalPrice = $product->price * $request->quantity;
 
-        // TODO: Compute pricing
+        if ($request->quantity > $product->quantity) {
+            return response()->json([
+                'success' => false,
+                'message' => "The quantity should be less than or equal to {$product->quantity}"
+            ], 400);
+        }
 
-        return response()->json(['success' => true]);
+        $order = $request->user()->orders()->create([
+            'product_id' => $request->product_id,
+            'total_price' => $totalPrice,
+            'status' => 'pending',
+            'payment_reference' => Str::uuid()
+        ]);
+
+        $product->update(['quantity' => ($product->quantity - $request->quantity)]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Order successfuly initiated',
+            'order' => $order
+        ]);
     }
 
     /**
@@ -42,6 +60,8 @@ class ProductOrderController extends Controller
         // TODO: Find order
         // TODO: Check order ownership
         // TODO: Set order as completed
+        // Set product order quantity
+
 
         return response()->json([
             'success' => true,

@@ -16,15 +16,18 @@ class OrderInitTest extends TestCase
 
     private User $user;
 
+    use RefreshDatabase;
+
     public function setUp(): void
     {
         parent::setUp();
 
-        $this->product = Product::factory()->create([
-            'quantity' => 10
-        ]);
-
         $this->user = User::factory()->create();
+
+        $this->withHeaders(['accept' => 'application/json']);
+
+        $this->product = Product::factory()->for($this->user, 'owner')
+            ->create();
     }
 
     /**
@@ -34,23 +37,45 @@ class OrderInitTest extends TestCase
      */
     public function test_guest_user_cannot_initiate_an_order()
     {
-        $response = $this->post('/order/init-product-order', []);
+        $response = $this->post('/api/order/init-product-order', []);
 
         $response->assertStatus(401);
+    }
+
+    /**
+     * Cannot initialize an order from a non existing product
+     */
+    public function test_user_cannot_initialize_an_order_from_a_non_existing_product()
+    {
+        $response = $this->actingAs($this->user, 'api')
+        ->post('/api/order/init-product-order', [
+            'product_id' => 200,
+            'quantity' => 11
+        ]);
+
+        $response->assertJsonValidationErrors('product_id');
+
+        $response->assertStatus(422);
     }
 
     // Test a user cannot request more than the existing quantity
     public function test_user_cannot_request_higher_quantity_on_a_product()
     {
-        $response = $this->withoutExceptionHandling()
-            ->post('/order/init-product-order', [
-                'product_id' => $this->product->id,
-                'quantity' => 11
+        $productQuantity = 10;
+
+        $newProduct = Product::factory()->state(['quantity' => $productQuantity])
+            ->for($this->user, 'owner')
+            ->create();
+
+        $response = $this->actingAs($this->user, 'api')
+        ->post('/api/order/init-product-order', [
+            'product_id' => $newProduct->id,
+            'quantity' => 12
             ]);
 
         $response->assertJson([
             'success' => false,
-            'message' => "The quantity should be less than {$this->product->quantity}"
+            'message' => "The quantity should be less than or equal to {$productQuantity}"
         ]);
 
         $response->assertStatus(400);
@@ -58,10 +83,16 @@ class OrderInitTest extends TestCase
 
     public function test_user_can_initiate_an_order()
     {
-        // TODO: This test should be able to run independently (changing its position)
+        $initialQuantity = $this->product->quantity;
+
+        $newProduct = Product::factory()->state(['quantity' => $initialQuantity])
+            ->for($this->user, 'owner')
+            ->create();
+
+
         $response = $this->actingAs($this->user, 'api')
-            ->post('/order/init-product-order', [
-                'product_id' => $this->product->id,
+            ->post('/api/order/init-product-order', [
+                'product_id' => $newProduct->id,
                 'quantity' => 2
             ]);
 
@@ -69,9 +100,9 @@ class OrderInitTest extends TestCase
 
         $this->assertTrue($response['success']);
 
-        $response->assertJson(fn (AssertableJson $json) => ($json->has('order')));
+        $response->assertJsonStructure(['success', 'order']);
 
-        $this->assertEquals(9, $this->product->quantity);
+        $this->assertEquals(($initialQuantity - 2), $newProduct->fresh()->quantity);
     }
 
 
@@ -86,10 +117,12 @@ class OrderInitTest extends TestCase
          */
         $newUser = User::factory()->create();
 
-        $order = ProductOrder::factory()->forUser($this->user)->create();
+        $order = ProductOrder::factory()
+            ->for($this->user, 'user')->for($this->product)
+            ->create();
 
         $response = $this->actingAs($newUser, 'api')
-            ->patch("/order/complete-order/{$order->id}");
+            ->patch("/api/order/complete-order/{$order->id}");
 
         $response->assertStatus(403);
 
@@ -100,10 +133,13 @@ class OrderInitTest extends TestCase
     // Set the order as completed, could also check if the payment is performed after the payment is done
     public function test_user_can_complete_an_their_initiated_order()
     {
-        $order = ProductOrder::factory()->forUser($this->user)->create();
+        $order = ProductOrder::factory()
+            ->for($this->user)
+            ->for($this->product)
+            ->create();
 
         $response = $this->actingAs($this->user, 'api')
-            ->patch("/order/complete-order/{$order->id}");
+            ->patch("/api/order/complete-order/{$order->id}");
 
         $response->assertStatus(200);
 

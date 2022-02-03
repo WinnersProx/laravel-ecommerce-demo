@@ -37,7 +37,7 @@ class ProductOrderController extends Controller
      * Complete a product order
      * @param ProductOrder $productOrder
      */
-    public function completeProductOrder(Request $request)
+    public function completeProductOrder(ProductOrder $order)
     {
         // TODO: Find order
         // TODO: Check order ownership

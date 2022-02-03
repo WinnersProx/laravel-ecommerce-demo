@@ -26,8 +26,8 @@ Route::group(['middleware' => 'auth:api'], function () {
         'Api\ProductOrderController@initProductOrder'
     );
 
-    Route::post(
-        '/order/complete-order',
+    Route::patch(
+        '/order/complete-order/{order}',
         'Api\ProductOrderController@completeProductOrder'
     );
 });

@@ -25,8 +25,11 @@ class ProductOrderController extends Controller
     public function initProductOrder(InitOrderRequest $request): JsonResponse
     {
         // TODO: Validate expected fields
+
         // TODO: Validate remaining quantity
+
         // TODO: Compute pricing
+
         return response()->json(['success' => true]);
     }
 

@@ -5,7 +5,7 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
-                <div class="card-header">{{ __('Dashboard') }}</div>
+                <div class="card-header">{{ __('Bio') }}</div>
 
                 <div class="card-body">
                     @if (session('status'))
@@ -14,7 +14,11 @@
                         </div>
                     @endif
 
-                    {{ __('You are logged in!') }}
+                    <div>
+                        Public Name:  {{ Auth::user()->murugoUser->murugo_user_public_name }}
+                    </div>
+
+                    {{ Auth::user()->bio }}
                 </div>
             </div>
         </div>

@@ -8,6 +8,8 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
+use RwandaBuild\MurugoAuth\Traits\MurugoAuthHelper;
+
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
@@ -21,7 +23,10 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'bio'
     ];
+
+    use MurugoAuthHelper;
 
     /**
      * The attributes that should be hidden for serialization.

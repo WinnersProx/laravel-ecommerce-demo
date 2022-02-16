@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "3621d4a372ea3d61076e942ea298223a",
+    "content-hash": "0e09fbe28ee24493049be5fa5d6c0883",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -4211,6 +4211,53 @@
                 }
             ],
             "time": "2021-09-25T23:10:38+00:00"
+        },
+        {
+            "name": "rwandabuild/murugo_api_auth",
+            "version": "v2.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/RWBuild/package_MurugoAuth_API-Laravel.git",
+                "reference": "1c01ee07999d58a3dd1a784a61eeaacad1bb78c1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/RWBuild/package_MurugoAuth_API-Laravel/zipball/1c01ee07999d58a3dd1a784a61eeaacad1bb78c1",
+                "reference": "1c01ee07999d58a3dd1a784a61eeaacad1bb78c1",
+                "shasum": ""
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "RwandaBuild\\MurugoAuth\\MurugoAuthServiceProvider"
+                    ],
+                    "aliases": {
+                        "MurugoAuth": "RwandaBuild\\MurugoAuth\\Facades\\MurugoAuth"
+                    }
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "RwandaBuild\\MurugoAuth\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Uwe Aime Van",
+                    "email": "uweaime@gmail.com"
+                }
+            ],
+            "description": "Package that will use Murugo auth to all 3rd party laravel projects with only API structure",
+            "support": {
+                "issues": "https://github.com/RWBuild/package_MurugoAuth_API-Laravel/issues",
+                "source": "https://github.com/RWBuild/package_MurugoAuth_API-Laravel/tree/v2.5"
+            },
+            "time": "2021-12-18T11:53:38+00:00"
         },
         {
             "name": "swiftmailer/swiftmailer",

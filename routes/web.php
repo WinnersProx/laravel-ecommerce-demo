@@ -20,4 +20,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/home', 'HomeController@index');
+Route::get('/murugo-login', 'Login\MurugoLoginController@redirectToMurugo')->name('murugo.login');
+Route::get('/murugo-callback', 'Login\MurugoLoginController@murugoCallback');
+
+Route::get('/home', 'HomeController@index')->name('home');

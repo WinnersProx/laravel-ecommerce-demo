@@ -9,6 +9,7 @@ if (!function_exists('triggerException')) {
     }
 }
 
+
 if (!function_exists('throwIf')) {
     function throwIf(bool $condition, string $message, $statusCode = 400)
     {

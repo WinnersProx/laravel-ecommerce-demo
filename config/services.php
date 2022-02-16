@@ -29,5 +29,13 @@ return [
         'secret' => env('AWS_SECRET_ACCESS_KEY'),
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
+    'murugo' => [
+        'client_id' => env('MURUGO_CLIENT_ID'),
+        'client_secret' => env('MURUGO_CLIENT_SECRET'),
+        'redirect' => env('APP_REDIRECT_URL', 'YOUR LOGIN REDIRECT URL'),
+        'murugo_url' => env('MURUGO_URL', 'MURUGO_URL'),
+        'murugo_app_key' => env('MURUGO_APP_KEY'),
+        'disable_user_session' => false
+    ]
 
 ];

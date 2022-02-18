@@ -9,9 +9,11 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
 use RwandaBuild\MurugoAuth\Traits\MurugoAuthHelper;
+use Laratrust\Traits\LaratrustUserTrait;
 
 class User extends Authenticatable
 {
+    use LaratrustUserTrait;
     use HasApiTokens, HasFactory, Notifiable;
 
     /**

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Exceptions\GeneralException;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Str;
 use App\Models\Product;
@@ -28,10 +29,7 @@ class ProductOrderController extends Controller
 
         $totalPrice = $product->price * $request->quantity;
 
-        throwIf(
-            ($request->quantity > $product->quantity),
-            "The quantity should be less than or equal to {$product->quantity}"
-        );
+        $this->validateQuantity($product, $request->quantity);
 
         $order = $request->user()->orders()->create([
             'product_id' => $request->product_id,
@@ -67,5 +65,19 @@ class ProductOrderController extends Controller
             'success' => true,
             'message' => 'Order successfully completed'
         ]);
+    }
+
+
+    public function validateQuantity(Product $product, $quantity)
+    {
+
+        throwIf(
+            ($quantity > $product->quantity),
+            "The quantity should be less than or equal to {$product->quantity}"
+        );
+
+        // if ($quantity > $product->quantity) {
+        //     triggerException("The quantity should be less than or equal to {$product->quantity}")->throw();
+        // }
     }
 }

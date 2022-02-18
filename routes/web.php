@@ -24,3 +24,26 @@ Route::get('/murugo-login', 'Login\MurugoLoginController@redirectToMurugo')->nam
 Route::get('/murugo-callback', 'Login\MurugoLoginController@murugoCallback');
 
 Route::get('/home', 'HomeController@index')->name('home');
+
+
+Route::middleware(['auth'])->group(function () {
+
+    Route::get('/assign-role', function () {
+
+        $user = request()->user();
+
+        $user->attachRole('superadministrator');
+
+        dd($user->hasRole('superadministrator'));
+    });
+});
+
+Route::middleware(['auth', 'role:superadministrator'])->prefix('superadmin')->group(function () {
+
+    Route::get('/dashboard', function () {
+
+        $user = request()->user();
+        $user->detachRole('superadministrator');
+        dd('Role assigned');
+    });
+});

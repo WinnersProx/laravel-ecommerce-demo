@@ -14,7 +14,8 @@
         "laravel/sanctum": "^2.11",
         "laravel/tinker": "^2.5",
         "laravel/ui": "^3.4",
-        "rwandabuild/murugo_api_auth": "^2.5"
+        "rwandabuild/murugo_api_auth": "^2.5",
+        "santigarcor/laratrust": "^6.4"
     },
     "require-dev": {
         "facade/ignition": "^2.5",
